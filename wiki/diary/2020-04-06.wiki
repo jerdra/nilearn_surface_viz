@@ -1,0 +1,26 @@
+= Day 2 - 2020-04-06 =
+
+== Structuring Incomplete CIFTI Files ==
+
+We define an incomplete CIFTI as one that's surface contains the full set of vertices (32492 for fsaverage_LR32k), but does not have values for every vertex. 
+
+Each `Cifti2BrainModel` object stores information about how the final information is stored in the parent `Cifti2Image.dataobj` `ArrayProxy` object. The following information gives the full specification about how to fill an empty `np.array` object that is of the appropriate length.
+
+* `Cifti2BrainModel.index_offset` - stores information about where to start in `Cifti2Image.dataobj` 
+* `Cifti2BrainModel.index_count` - stores information about the number of vertices to include form start in `Cifti2Image.dataobj`
+* `Cifti2BrainModel.vertex_indices` give us information about which vertices to fill in the complete CIFTI surface from `Cifti2Image.dataobj`
+  
+== Components Needed for Visualization of dscalar Data ==
+
+Several components are required for surface mesh visualization:
+1. `surf_mesh` - which consists of the following input forms:
+	a) Path to .gii file or volume-based files
+	b) Freesurfer-type files
+	c) A list of `numpy` arrays [0]: x,y,z coordinates, [1]: indices into mesh faces
+2. `surf_map` - data to be be displayed onto the surface mesh, must of the following forms:
+	a) Path to .gii file
+	b) Freesurfer-type files
+	c) A single numpy array, with 1 value per vertex in `surf_mesh`
+3. `bg_map` - background image to be plotted on the mesh under the `surf_map` to modulate the values. Will yield shading properties. Sulcal depth maps are typically a good idea.
+4. `bg_on_data` - multiply overlay with `surf_map` and `bg_map`
+5. `darkness` - modulate the strength of `bg_map` [0-1]

@@ -1,0 +1,14 @@
+= MRI Pipeline QC Reporting Tools MiPiQ =
+
+* [[Project Proposal]]
+
+== Initial Planning Stages ==
+* [[Survey of Current Tools]]
+* [[Software Requirements]]
+
+== HCPPipelines Build ==
+* [[Requirements]]
+
+== Development Notes ==
+* [[Loading in CIFTI Files]]
+* [[Visualization of CIFTI Files]]

@@ -1,0 +1,13 @@
+ = Survey of Current Tools =
+ 
+- niworkflows reportlets
+  - Closest API but suffers from nipype dependencies, user unfriendly documentation limitations, and not generalized/easily user-configurable enough to use for general pipelines
+  - Not interested in the API
+
+- visbrain
+  - Still early days, not clear which MNI template is being used, and not adapted to connectome workbench formats easily. Doesn't employ standard neuroimaging toolkits in python, won't grow w/the API of standard tools (nibabel/nilearn) which is problematic long-term.
+
+- nilearn
+  - Great for surface-based visualization (in theory)
+  - Not well suited for composing multiple views/overlays or animation. 
+  - Plan is to build an additional API over this using web-based tools for rendering/viewing images + easily configured user input in the form of a YAML structure.

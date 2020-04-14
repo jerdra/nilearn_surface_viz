@@ -1,0 +1,61 @@
+== Components Needed for Visualization of dscalar Data ==
+
+Several components are required for surface mesh visualization:
+1. `surf_mesh` - which consists of the following input forms:
+	a) Path to .gii file or volume-based files
+	b) Freesurfer-type files
+	c) A list of `numpy` arrays [0]: x,y,z coordinates, [1]: indices into mesh faces
+2. `surf_map` - data to be be displayed onto the surface mesh, must of the following forms:
+	a) Path to .gii file
+	b) Freesurfer-type files
+	c) A single numpy array, with 1 value per vertex in `surf_mesh`
+3. `bg_map` - background image to be plotted on the mesh under the `surf_map` to modulate the values. Will yield shading properties. Sulcal depth maps are typically a good idea.
+4. `bg_on_data` - multiply overlay with `surf_map` and `bg_map`
+
+== Constructing `surf_mesh` ==
+
+=== Components Needed for Visualization of dscalar Data ===
+
+Several components are required for surface mesh visualization:
+1. `surf_mesh` - which consists of the following input forms:
+	a) Path to .gii file or volume-based files
+	b) Freesurfer-type files
+	c) A list of `numpy` arrays [0]: x,y,z coordinates, [1]: indices into mesh faces
+2. `surf_map` - data to be be displayed onto the surface mesh, must of the following forms:
+	a) Path to .gii file
+	b) Freesurfer-type files
+	c) A single numpy array, with 1 value per vertex in `surf_mesh`
+3. `bg_map` - background image to be plotted on the mesh under the `surf_map` to modulate the values. Will yield shading properties. Sulcal depth maps are typically a good idea.
+4. `bg_on_data` - multiply overlay with `surf_map` and `bg_map`, this must be *on for bg_map to work*
+5. `darkness` - modulate the strength of `bg_map` [0-1]
+
+
+=== Loading in surface GIFTI files ===
+
+* `Gifti2Image.darrays` contains a list of `GiftiDataArrays`
+* `GiftiDataArrays` contain the following useful methods and properties:
+	* `print_summary()` which prints information about the Dataspace, as well as xform (affine matrix) information.
+	* `xform` which will return information on the affine matrix
+	* `data` which stores the actual data as an `np.array` object
+
+==== Constructing the `surf_mesh` object ====
+
+The organization principal of `GiftiDataArrays` within the `Gifti2Image.darrays` list is such the *index* object is stored in the first item and the coordinates stored in the second. *Should verify whether this is consistent.*
+
+A caveat here, is that the data that is to be mapped onto the surface contains a natural ordering for its indexing. We're going to assume that this does not change for now:
+1. `CIFTI_STRUCTURE_CORTEX_LEFT`
+2. `CIFTI_STRUCTURE_CORTEX_RIGHT`
+
+The solution is to offset the indexing of the `CIFTI_STRUCTURE_CORTEX_RIGHT` triangles by the index offset which is determined by the length of the coordinate array. 
+
+Once `surf_mesh` has been constructed, we can easily view surfaces using either:
+* `nilearn.plotting.view_surf` for interactive viewing
+* `nilearn.plotting.plot_surf` for static views
+
+==== Constructing the `surf_map` object ====
+
+We've actually already achieved this with earlier testing. More details can be found in [[/Loading in CIFTI Files| Loading in CIFTI Files]]
+
+==== Constructing the `bg_map` object ====
+
+This follows the same procedure as constructing the `surf_map`. More details can be found [[/Loading in CIFTI Files| Loading in CIFTI Files]]

@@ -1,0 +1,41 @@
+= Loading in CIFTI Files =
+
+=== Loading in GIFTI Surface Files ===
+GIFTI files can be loaded simply through nilearn's `surface.load_surf_mesh` functionality. However, some CIFTI files cannot be directly loaded using nilearn, instead you need to use Nibabel to handle data ingestion.
+
+
+=== Loading in CIFTI Surface Files ===
+
+There exist a class of CIFTI files which contain less than the expected number of vertices (~32k/hemisphere) and this is due to the exclusion of the medial wall. To get around this we need the indices of the vertices of the medial wall since some vertices are unset.
+
+With a bit of experimenting with Nibabel's API it seems that we can access some vertex-information with the following lengthy set of calls:
+
+* `Cifti2Image.header.get_index_map(1).brain_models` yields a generator object, typically with 2-3 items depending on whether subcortical regions are included
+* Each item in the iterator is a `Cifti2BrainModel`, which may correspond to subcortical, left, or right hemispheres. These objects have the following useful properties:
+	* `brain_structure`: yields the CIFTI_STRUCTURE[_NAME...] string
+	* index_count: number of indices to expect for this brain model
+	* index_offset: index # of first element in brain model
+	* surface_number_of_vertices: number of vertices of associated surface model (i.e: fsaverage_LR32K contains 32492 vertices/hemisphere)
+* The most important property is `vertex_indices` which contains the `Cifti2VertexIndices` container object.
+	* The length of this container matches `index_count`.
+	* As a container using `np.array`, `list` both will yield the list of vertex IDs
+
+==== Working Method ====
+
+1. `nib.load(path_to_cifti)` will yield the `Cifti2Image`
+2. `np.asanyarray(Cifti2Image.dataobj)` will yield the array of data values of length `index_count`
+3. It is possible that the `index_count` will not match the number of vertices in the associated surface. In this case, it is usually because some values are left un-filled - such as the medial wall.
+4. The workaround here is to perform the following set of operations
+	i) `Cifti2Image.header.get_index_map([0: MAPS, 1: ROWS])`
+	ii) `list(Cifti2MatrixIndicesMap.brain_models)` will yield a number of `Cifti2BrainModel` objects
+	iii) `np.array(Cifti2BrainModel.vertex_indices)`
+
+== Structuring Incomplete CIFTI Files ==
+
+We define an incomplete CIFTI as one that's surface contains the full set of vertices (32492 for fsaverage_LR32k), but does not have values for every vertex. 
+
+Each `Cifti2BrainModel` object stores information about how the final information is stored in the parent `Cifti2Image.dataobj` `ArrayProxy` object. The following information gives the full specification about how to fill an empty `np.array` object that is of the appropriate length.
+
+* `Cifti2BrainModel.index_offset` - stores information about where to start in `Cifti2Image.dataobj` 
+* `Cifti2BrainModel.index_count` - stores information about the number of vertices to include form start in `Cifti2Image.dataobj`
+* `Cifti2BrainModel.vertex_indices` give us information about which vertices to fill in the complete CIFTI surface from `Cifti2Image.dataobj`

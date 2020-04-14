@@ -1,0 +1,21 @@
+= Software Requirements =
+
+== Surface/Volume interface ==
+* Surface based and Volume based should have same/similar interfaces
+
+== Composable API ==
+* Transitions should take any view and implement flexible transitioning
+* Persistent views (Overlay Type?) 
+* Reports should allow for composable reports based on a YAML specification of desired inputs as well as reports. This should be a separate high*level API. Ideally the visualization engine (basically rejiggering nilearn w/additional view capabilities) below should be readily separable and extended upon
+* Should differentiate b/w Overlay type vs Background like Nilearn does. Or let persistent types be flexible --> opacity changes enable overlay. 
+* Important thing is that rendering should be dynamically placed at all times. Will not include a 3D brain orthographic rendered as its slow and not practical for fast QC. 
+* May be problematic for surface based drawings, unless you extract coordinates of vertices/triangles where lines and patches are being drawn
+
+== Basic modes ==
+All modes should contain a surface and volume based view.
+* "Contour" based method to allow contouring visualizations
+* "ROI" based method to allow for patch*based visualizations w/clearly defined labels
+* "Display" based method to view items as is (i.e: T1w image etc)
+* "Statmap" based visualizations (dscalar equivalent)
+* "Dynamic Statmap" multi*value based visualizations?
+* "Network maps" 

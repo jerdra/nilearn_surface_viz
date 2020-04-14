@@ -1,0 +1,45 @@
+= PROJECT PROPOSAL =
+
+== General Description ==
+
+*RATIONALE*
+
+QCing data is slowed down by the amount of manual sifting time required to go through pages of images and manually (mentally) checking out images as usable. The issue with this approach is that it relies on the user to keep organized about QC notes which is problematic in that:
+* Since each user will have different methods of storing notes, its difficult to exchange information
+* Its not obvious what the rating system is from another user
+* Re-checking images often requires manually going to a specific image or report on the filesystem, opening it, and viewing it. 
+* There is a lack of historical tracking of data checks. What if ratings change over time due to emerging standards? With a standard spreadsheet that information is instantly lost without the users themselves designing their own homebrew system 
+* Typically pipeline quality control pages are meant to check quality of pipeline outputs, and that's it.... however quality control results are becoming increasingly more integrated with downstream analysis.
+
+In addition, most pipeline outputs rely on static pages in order to do their QC work, this is problematic in that switching contexts becomes taxing on the user. The organization of the pipeline run itself constrains _how_ users perform quality control
+* For example fMRIPrep constrains the user to look at entire subjects at a time. What if the user was only interested in a single task, or the structural images
+* What if users wanted to integrate across _multiple pipelines_ for their particular analysis?
+
+These ideas stem from the belief that *Quality control* should be catered for the class of analysis that one wants to perform. And that given a dataset, users should be able to flexibly query quality control images to suit their needs.
+
+In addition to this, any quality control system should be easily extensible from a developer point of view to incorporate new types of QC images as needed, and this should also be readily incorporated into the QC process.
+
+*PROJECT IDEA*
+
+Develop a portable web-applet based dashboard interface for automatically generating QC reports from any set of BIDS pipeline outputs..
+
+== Features Required on User side ==
+
+1. Easily configurable pathing for outputs and labelling. Ideally we don't want our consumers to create their own figures, but instead to use the software to generate images according to a YAML-like configuration file.
+2. This will generate the needed index/files for the stage 2 visualization component. Alternatively all of this could maybe happen from the visualization component interface. But that would require launching processes - not sure how difficult that could end up being...
+3. Be able to dynamically bring up different views. Some examples:
+	a) All of a single QC-type on the interface (across subjects view)
+	b) Pivot to other views such as within subject, etc..
+	c) Active filtering of images via check-boxed types?
+	d) Search filtering on top of that to display intersection based filtering.
+
+== What's actually needed for QC... ==
+* Mechanism to save rating on QC images (1-5 for example)
+* Mechanism to filter for images that haven't been QC'd yet
+* Mechanism for multiple raters to work on QC and view some statistics on QC rating could work with shared file-system....
+* Mechanism to export data from application as a CSV for reporting. 
+* Mechanism to tag/flag files using pre-specified comment types (i.e bad registration, etc..)
+
+== Nice to have additional features ==
+* Be able to interface with our existing dashboard, supplement it?
+	* Would require a good API to interface with? Not sure...
